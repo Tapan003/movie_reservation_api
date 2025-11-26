@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Live Seat Map</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+    <style>
+        .seat { display: inline-block; width: 40px; height: 40px; margin: 5px; background: lightgreen; text-align: center; line-height: 40px; border: 1px solid #333; }
+        .booked { background: red; color: white; }
+    </style>
+</head>
+<body>
+    <h2>Live Seat View (Showtime 1)</h2>
+    <div id="seats">
+        <div id="A1" class="seat">A1</div>
+        <div id="A2" class="seat">A2</div>
+        <div id="B1" class="seat">B1</div>
+    </div>
+
+    <script>
+        // Connect to our Flask Server
+        var socket = io.connect('http://127.0.0.1:5000');
+
+        socket.on('connect', function() {
+            console.log('Connected to Real-Time Server!');
+        });
+
+        // Listen for the 'seat_booked' event
+        socket.on('seat_booked', function(data) {
+            console.log("Update received!", data);
+            
+            // If the booking is for this showtime, turn the box RED
+            if(data.showtime_id == 1) {
+                var seatDiv = document.getElementById(data.seat_code);
+                if(seatDiv) {
+                    seatDiv.className = "seat booked"; // Change color to red
+                }
+            }
+        });
+    </script>
+</body>
+</html>
