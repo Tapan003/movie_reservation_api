@@ -34,12 +34,14 @@ db = SQLAlchemy(app)
 @app.route('/setup-db')
 def setup_database():
     try:
-        # This command creates all tables (User, Movie, Booking, etc.)
         with app.app_context():
+            # 1. Drop everything (Delete old tables with wrong limits)
+            db.drop_all()
+            # 2. Create everything new (With the new 256 limit)
             db.create_all()
-        return "Database tables created successfully! You can now register."
+        return "Database reset and created successfully! Old data is gone."
     except Exception as e:
-        return f"Error creating tables: {str(e)}"
+        return f"Error: {str(e)}"
 # -----------------------------------------
 
 # 3. Define the Movie Model
@@ -57,7 +59,7 @@ class Movie(db.Model):
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(50), unique=True, nullable=False) # unique=True means no duplicate usernames
-    password_hash = db.Column(db.String(128), nullable=False)
+    password_hash = db.Column(db.String(512), nullable=False)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
