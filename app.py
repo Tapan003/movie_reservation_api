@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from sqlalchemy.pool import NullPool
 from flask_sqlalchemy import SQLAlchemy 
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_jwt_extended import JWTManager, create_access_token, jwt_required, get_jwt_identity
@@ -23,6 +24,7 @@ if database_url.startswith("postgres://"):
 
 app.config['SQLALCHEMY_DATABASE_URI'] = database_url
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False # Turns off a warning message
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"poolclass": NullPool}
 app.config["JWT_SECRET_KEY"] = "super-secret-key"  # Change this in production!
 socketio = SocketIO(app, cors_allowed_origins="*")
 jwt = JWTManager(app)
