@@ -32,6 +32,18 @@ jwt = JWTManager(app)
 # 2. Initialize the Database
 db = SQLAlchemy(app)
 
+# --- TEMPORARY DATABASE SETUP ENDPOINT ---
+@app.route('/setup-db')
+def setup_database():
+    try:
+        # This command creates all tables (User, Movie, Booking, etc.)
+        with app.app_context():
+            db.create_all()
+        return "Database tables created successfully! You can now register."
+    except Exception as e:
+        return f"Error creating tables: {str(e)}"
+# -----------------------------------------
+
 # 3. Define the Movie Model
 # This class represents the 'movies' table in our database
 class Movie(db.Model):
