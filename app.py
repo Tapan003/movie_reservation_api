@@ -9,8 +9,10 @@ from flask_socketio import SocketIO, emit
 from textblob import TextBlob
 from datetime import datetime
 import os
+from flask_cors import CORS
 
 app = Flask(__name__)
+CORS(app)
 
 # 1. Configure the Database
 # This tells Flask to create a file named 'movies.db' in the current folder
